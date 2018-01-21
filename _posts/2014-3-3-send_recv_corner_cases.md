@@ -24,8 +24,8 @@ and `recv()`.  Both take a buffer (to send or receive) and a length
 (of said buffer). In C, this looks like:
 
 ```c
-int send(socket_t skt, uint8_t const* buffer, size_t length);
-int recv(socket_t skt, uint8_t const* buffer, size_t length);
+int send(socket_t skt, uint8_t* buffer, size_t length);
+int recv(socket_t skt, uint8_t* buffer, size_t length);
 
 ```
 
@@ -52,7 +52,8 @@ you have quite a few such places in your code.  You don't want to sow
 `if (length > 0)` all around your calls to `send()`/`recv()`.
 
 ```c
-int send_b64_encoded(socket_t skt, uint8_t const* buffer, size_t length)
+int send_b64_encoded(socket_t skt, 
+    uint8_t* buffer,  size_t length)
 {
     uint8_t* encoded = ab64_encode(buffer, &length);
     int rslt = send(skt, encoded, length);

@@ -27,8 +27,8 @@ lang: sr
 овако:
 
 ```c
-int send(socket_t skt, uint8_t const* buffer, size_t length);
-int recv(socket_t skt, uint8_t const* buffer, size_t length);
+int send(socket_t skt, uint8_t* buffer, size_t length);
+int recv(socket_t skt, uint8_t* buffer, size_t length);
 
 ```
 
@@ -49,10 +49,11 @@ _нишпта_?  Просто немојмо да шаљемо _ишта_. Хо�
 Добро, али, зашто би онда ипак овако нешто разматрали? Па, један
 пример би био ако у неком општем коду примате дужину и онда је
 просто прослеђујете. Нема баш много смисла да "посејете" `if (length > 0)`
-по свим таквим местима.
+по свим таквим местима. 
 
 ```c
-int send_b64_encoded(socket_t skt, uint8_t const* buffer, size_t length)
+int send_b64_encoded(socket_t skt, 
+    uint8_t* buffer, size_t length)
 {
     uint8_t* encoded = ab64_encode(buffer, &length);
     int rslt = send(skt, encoded, length);
