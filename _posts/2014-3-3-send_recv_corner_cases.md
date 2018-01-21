@@ -8,7 +8,7 @@ Designing, implementing and documenting corner cases is always
 "fun". Obviously, I'm kidding.  It's quite the opposite. It's boring.
 
 We tend to assume how these will work, that it's OK and we don't need
-to worry about it too much.  That is, we thing that the general
+to worry about it too much.  That is, we think that the general
 description fits the corner case. Even if it doesn't, it's "close
 enough" and, it's a corner case, it doesn't happen too often and, as
 long as it doesn't crash, it's OK, whatever it is.
@@ -21,11 +21,19 @@ case".
 
 So, let's take an example of the well-known sockets functions `send()`
 and `recv()`.  Both take a buffer (to send or receive) and a length
-(of said buffer). Well, at least in C, in some higher lever language
-an abstraction of a "vector" or some such thing might be provided,
-which "bundles" the buffer and its length into one value
-(variable). But, even these two are bundled, they still exist, so this
-doesn't change the fundamentals of what we're going to describe here.
+(of said buffer). In C, this looks like:
+
+```c
+int send(socket_t skt, uint8_t const* buffer, size_t length);
+int recv(socket_t skt, uint8_t const* buffer, size_t length);
+
+```
+
+In some higher lever language an abstraction of a "vector" or some
+such thing might be provided, which "bundles" the buffer and its
+length into one value (variable). But, even these two are bundled,
+they still exist, so this doesn't change the fundamentals of what
+we're going to describe here.
 
 Depending on your sockets implementation, the length might be `signed`
 or `unsigned` `int`eger of various size. But, let's say that, even if
@@ -43,8 +51,18 @@ takes the length from somewhere and just passes it along. Actually,
 you have quite a few such places in your code.  You don't want to sow
 `if (length > 0)` all around your calls to `send()`/`recv()`.
 
-That makes sense, so, what shall and will `send()` and `recv()` do in
-this case?
+```c
+int send_b64_encoded(socket_t skt, uint8_t const* buffer, size_t length)
+{
+    uint8_t* encoded = ab64_encode(buffer, &length);
+    int rslt = send(skt, encoded, length);
+    free(encoded);
+    return rslt;
+}
+```
+
+That makes sense, so, what shall `send()` and `recv()` do in this
+case?
 
 In all the sockets (or even "sockets-ish") implementations I found,
 this is not documented.  It's always something like:
