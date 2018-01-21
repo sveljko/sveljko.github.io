@@ -14,12 +14,13 @@ crash, it's OK, whatever it is.
 But, this is software, it has no soul and plays no favorites to any values and/or (corner) cases.
 Corner case should be "just another case".
 
-## Sockets send and recv
+## Sockets sending and receiving nothing
 
 So, let's take an example of the well-known sockets functions `send()` and `recv()`.
 Both take a buffer (to send or receive) and a length (of said buffer). Well, at least in C,
 in some higher lever language an abstraction of a "vector" or some such thing might be provided,
-which "bundles" the two into one value (variable). But, even these two are bundled, they still exist, so this doesn't change the fundamentals of what we're going to describe here.
+which "bundles" the buffer and its length into one value (variable). But, even these two are 
+bundled, they still exist, so this doesn't change the fundamentals of what we're going to describe here.
 
 Depending on your sockets implementation, the length might be `signed` or `unsigned` `int`eger of
 various size. But, let's say that, even if it's signed, passing negative values is an obvious
@@ -31,19 +32,19 @@ When you think about it, it doesn't make sense. You want to send _nothing_? Just
 You want to receive _nothing_? Good for you, but keep it to yourself.
 
 So, why would you do it? Well, you might have some generic code that takes the length from somewhere
-and you just passes it along. You don't want to sow `if (length > 0)` all around your calls to `send()`
-/`recv()`.
+and just passes it along. Actually, you have quite a few such places in your code. 
+You don't want to sow `if (length > 0)` all around your calls to `send()`/`recv()`.
 
-That makes sense, so, what shall and will `send()` and `recv()` do in this cases.
+That makes sense, so, what shall and will `send()` and `recv()` do in this case?
 
-In all the implementations I found, this is not documented. It's always something like:
+In all the sockets (or even "sockets-ish") implementations I found, this is not documented. 
+It's always something like:
 
 > This function will send `length` number of bytes from `buffer`.
 
 Sure, there's other text there, but, in general, there's nothing describing what happens if `length==0`.
 Is that an error? And what error is reported (via `errno`, in most sockets)? If it's not an error,
 what's the behavior? Is it different depending on some socket options, foremost the "(non-)blocking I/O".
-Also, is it the same for connection-oriented sockets (like TCP/IP) and for datagram-oriented (like UDP/IP)?
 
 What's the "big deal here"? Well, most, if not all, sockets also document this:
 
