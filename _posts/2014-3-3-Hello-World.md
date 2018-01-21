@@ -7,20 +7,25 @@ Designing, implementing and documenting corner cases is always "fun". Obviously,
 It's quite the opposite. It's boring.
 
 We tend to assume how these will work, that it's OK and we don't need to worry about it too much.
+That is, we thing that the general description fits the corner case. Even if it doesn't, it's
+"close enough" and, it's a corner case, it doesn't happen too often and, as long as it doesn't
+crash, it's OK, whatever it is.
 
 But, this is software, it has no soul and plays no favorites to any values and/or (corner) cases.
 Corner case should be "just another case".
 
+## Sockets send and recv
+
 So, let's take an example of the well-known sockets functions `send()` and `recv()`.
 Both take a buffer (to send or receive) and a length (of said buffer). Well, at least in C,
-in some higher lever language an abstraction of a "vector" or some such thing might be provided.
-But, even if it is, it doesn't change the fundamentals of what we're going to describe here.
+in some higher lever language an abstraction of a "vector" or some such thing might be provided,
+which "bundles" the two into one value (variable). But, even these two are bundled, they still exist, so this doesn't change the fundamentals of what we're going to describe here.
 
-Depending on your sockets implementation, the length might be signed or unsigned integer of
+Depending on your sockets implementation, the length might be `signed` or `unsigned` `int`eger of
 various size. But, let's say that, even if it's signed, passing negative values is an obvious
 error and we don't care much.
 
-What we want to explore is setting the length to be zero: `0`.
+What we want to explore is what happens if the length is zero: `0`.
 
 When you think about it, it doesn't make sense. You want to send _nothing_? Just don't `send` at all.
 You want to receive _nothing_? Good for you, but keep it to yourself.
@@ -62,6 +67,8 @@ This is a perfect example of a corner case that was not thought about. At design
 interface could have been devised. At (post) implementation time, a better description/specification
 could have been done, indicating what happens.
 
+## How does it actually work?
+
 You're probably wondering what actually happens? I didn't make a detailed survey, but, my limited
 testing shows this:
 
@@ -75,6 +82,8 @@ Sure, from a certain POV, it makes sense, but, it's actually bad, as the same fu
 which is _bad_ usage of the API, has different error indicators depending on some setting which
 has _nothing_ to do with the actual problem at hand.
 
+## How should it work?
+
 As to not only point to errors, let's think about solutions.
 
 The immediate solution would be to make `length=0` an error, return `-1` always with a special
@@ -86,7 +95,9 @@ always be error (or `0` if there's no error) and give the number of bytes actual
 back in an (in-)out parameter. The closing of the connection would produce an error 
 "CONNECTION_CLOSED". In this case, for `length=0`, simply return `0` (no error).
 
-Basically, the moral of the story is that one does need to handle corner cases just like any other
+## Moral of the story
+
+One does need to handle corner cases just like any other
 cases, even if they don't "make sense" and "don't matter much" ("who cares what happens, as long
 as nothing crashes"). The amount of time lost trying to makes sense of it all when you do find
 yourself in the corner (case) is way too big, compared to a little documentation/specification
