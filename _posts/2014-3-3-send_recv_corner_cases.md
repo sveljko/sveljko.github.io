@@ -46,10 +46,12 @@ When you think about it, it doesn't make sense. You want to send
 _nothing_? Just don't `send` at all.  You want to receive _nothing_?
 Good for you, but keep it to yourself.
 
-So, why would you do it? Well, you might have some generic code that
-takes the length from somewhere and just passes it along. Actually,
-you have quite a few such places in your code.  You don't want to sow
-`if (length > 0)` all around your calls to `send()`/`recv()`.
+### It doesn't make sense, so why do it?
+
+Well, you might have some generic code that takes the length from
+somewhere and just passes it along. Actually, you have quite a few
+such places in your code.  You don't want to sow `if (length > 0)` all
+around your calls to `send()`/`recv()`.
 
 ```c
 int send_b64_encoded(socket_t skt, 
@@ -62,8 +64,23 @@ int send_b64_encoded(socket_t skt,
 }
 ```
 
-That makes sense, so, what shall `send()` and `recv()` do in this
-case?
+In an isolated example such as this, adding the `if` is not too bad.
+But, if this thing starts to spread and you have, say,
+`send_ascii85_encoded()`, `send_base41_encoded()`..., then, it becomes
+a nuisance.
+
+On another matter, this can come to be as a consequence of an error.
+For example, it is usual to send (or receive) data in "parts", for
+various reasons. You have the whole data to send with `length =
+total_length`, then send it part by part, reducing `length -=
+length_of_sent_data` after each partial send. Obviously, by the end,
+you'll reach `length == 0`, at which time you should stop. But, some
+bug in the code might make you not stop and try to send with `length
+== 0`.
+
+### OK, stuff happens, now what?
+
+So, what shall `send()` and `recv()` do in this case?
 
 In all the sockets (or even "sockets-ish") implementations I found,
 this is not documented.  It's always something like:
