@@ -12,11 +12,10 @@ for string handling.
 
 ## Everybody says C is bad for string handling
 
-What "they" usually mean is that you have to do a "lot of work" to
-handle strings in C, as there is no real string abstraction in C.
-There's just a convention, codified by the string literals and the
-standard libray, that an array of `char`s that ends with the `NUL`
-character (`'\0'`) is a string.
+What "everybody" mean is that you have to do a "lot of work" to handle
+strings in C, as there is no real string abstraction in C.  There's
+just a convention, codified by the standard library, that an array of
+`char`s that ends with the `NUL` character (`'\0'`) is a "string".
 
 This is a problem, but, a lot of times, one doesn't need to "jump
 through hoops" to handle strings in C. One just needs to take care.
@@ -63,7 +62,8 @@ a good optimizing compiler (like using `strlen()` to calculate the
 length of a literal string, rather than `sizeof`). Some "genius"
 compiler might even infer that the there is no need for
 `line[line_length] = '\0'`, because `version_tag_len <= line_length`,
-so the following line will cut the string at least as short.
+so the next line (`line[version_tag_len] = '\0';`) will cut the string
+at least as short.
 
 The name is also not great. With current name, one would be more
 inclined to assume that `stream` would be read until the
@@ -73,14 +73,13 @@ But, even if we fix all of the above (or let (genius) compiler do it),
 this is way too complex.
 
 Code actually just wants to read some string from a stream (never mind
-what is the stream - is it a file, socket, some pipe or some other
-such thing) and then compare it to some expected string. That's all.
+what is the stream - is it a file, socket, pipe or some other such
+thing) and then compare it to some expected string. That's all.
 
 ## What would this look like in your favourite high-level language?
 
 Assuming you have the stream library that works in such a way, you
-should be able to get away with (this is Ruby, but similar things can
-be done in many other languages):
+should be able to get away with:
 
 ```ruby
 def expect_string(stream)
@@ -88,10 +87,11 @@ def expect_string(stream)
 end
 ```
 
+This is Ruby, but similar things can be done in many other languages.
 
 OK, this obviously doesn't handle errors explicitly, assuming some
 exception handling, and it doesn't limit the input length, but, you
-might have `read(max_bytes)` also.
+might have `stream.read(max_bytes)` also.
 
 The point is that this code is pretty easy to reason about.
 
@@ -100,7 +100,7 @@ The point is that this code is pretty easy to reason about.
 Let's start by figuring out what is the cause of all this code.
 Obviously, the author was in the mind-set that, in C, you have
 to take care of your strings manually. Which is, true, of course.
-But, you don't to do it "each step of the way".
+But, you don't have to do it "each step of the way".
 
 In abstract, the code above does this:
 
@@ -112,19 +112,19 @@ In abstract, the code above does this:
     otherwise, return FAILURE
 
 But, see, it doesn't have to do all this.  There's no need to
-calculate, as there's no need to actually make the ASCIIZ string. Comparison
-in `strcmp()` actually stops as soon as the NUL is encountered - it
-does _not_ check if the other string has NUL at the same place.
+calculate, as there's no need to actually make the ASCIIZ
+string. Comparison in `strcmp()` stops as soon as `NUL` is
+encountered - it does _not_ check if the other string has `NUL` at the
+same place.
 
 Also, there's another reason this code is bad. It doesn't handle
 errors explicitly, it "hides" that behind the "if read string is too
 short", because, on error, `read()` will return `-1` and that is,
 obviously, too short.  But, such "clever" code is bad, as one needs
-too figure out this assumption from the "environment". That is, to
+to figure out this assumption from the "environment". That is, to
 reason about such code, the code itself is not enough. Also, during
-some code mutation, like change of the semantics of `read()`,
-copy-past to use with some function similar to `read()` that has
-different semantics or some such thing, it will break.
+some code mutation, it will probably break. For example, change to use
+some read()-like function which doesn't return `-1` on error.
 
 So, let's see what we can get:
 
@@ -196,17 +196,17 @@ int expect_string(int sm, char const* ex, char* ln, size_t max_len)
 Now the user needs to allocate the "working buffer" (line) string and
 pass its allocated length, which is rather inconvenient.
 
-But, while the "real" line is longer and more verbose than
-high-level code variant, it actually handles the error explicitly
-(w/out exceptions, which are expensive in so many ways) and does _not_
-allocate _any_ (heap) memory, which means it is much faster.
+But, while the line is longer and more verbose than high-level code
+variant, it actually handles the error explicitly (w/out exceptions,
+which are expensive in so many ways) and does _not_ allocate _any_
+(heap) memory, which means it is much faster.
 
 ## The C++ array reference w/template trick
 
-While in C++ you can use higher level abstractions, like `std::string`
-and IOStreams, you can still stay low-level but get extra goodies.
-In our case, the one-liner can be more user friendly if the caller
-has a statically allocated string:
+In C++ you can use higher level abstractions, like `std::string` and
+IOStreams, but you can also stay low-level but get extra goodies.  In
+our case, the one-liner can be more user friendly if the caller has a
+statically allocated string:
 
 ```c++
 template <int N> inline
