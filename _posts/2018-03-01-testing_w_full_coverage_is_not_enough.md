@@ -25,21 +25,24 @@ next to expire), it was handled badly. The time for this timer
 to expire was _not_ added to the next timer.
 
 To illustrate, suppose we have two timers, both started to 100 ticks,
-but, 1 tick "apart". So, after the start, list looked like this:
+but, 1 tick "apart". So, after the start of the second timer, list
+looked like this:
 
-    T1(100) -> T2(1)
+    T1(99) -> T2(1)
 
 Let's say 40 ticks passed, list would be:
 
-    T1(60) -> T2(1)
+    T1(59) -> T2(1)
 
 Then T1 got cancelled. List _should_ be:
 
-    T2(61)
+    T2(60)
 	
 But, because of the bug, the list was:
 
     T2(1)
+	
+So, T2 will expire after 41 tick, instead of after 100 ticks.
 	
 There was a branch of code that handled this case. But, the code
 to add time "time to expire" was missing. It was C, and this line
