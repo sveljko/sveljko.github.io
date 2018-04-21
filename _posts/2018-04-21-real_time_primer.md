@@ -75,26 +75,28 @@ POSIX API for directory traversal:
 ```c
 int delete_dir(char const* dirname)
 {
-    int rslt = -1;
-    DIR*           dir = opendir(dirstack);
+    int  rslt = -1;
+    DIR* dir  = opendir(dirstack);
     if (NULL == dir) {
         return -1;
     }
     do {
-        char        fname[MAX_PATH + 1];
-        struct stat statbuf;
-		struct dirent* entry = readdir(dir);
+        char           fname[MAX_PATH + 1];
+        struct stat    statbuf;
+        struct dirent* entry = readdir(dir);
         if (NULL == entry) {
             break;
         }
-        if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
+        if (!strcmp(entry->d_name, ".")
+            || !strcmp(entry->d_name, "..")) {
             continue;
         }
-        snprintf(fname, sizeof fname, "%s/%s", dirname, entry->d_name);
+        snprintf(
+            fname, sizeof fname, "%s/%s", dirname, entry->d_name);
         rslt = stat(fname, &statbuf);
         if (0 == rslt) {
             if (S_ISDIR(statbuf.st_mode)) {
-				rslt = delete_dir(fname);
+                rslt = delete_dir(fname);
             }
             else {
                 rslt = remove(fname);
@@ -103,7 +105,7 @@ int delete_dir(char const* dirname)
     } while (0 == rslt);
 
     closedir(dir);
-	remove(dirname);
+    remove(dirname);
 
     return rslt;
 }
