@@ -295,11 +295,11 @@ int delete_dir(char const* dirname, int ms_limit)
     int rslt = clock_gettime(CLOCK_MONOTONIC, &tend);
     if (0 == rslt) {
         tend.tv_nsec =
-            (tend.tv_nsec + ms_limit * 1000 * 1000)
-            % NANO_IN_X;
+            (tend.tv_nsec + ms_limit * NANO_IN_MILLI)
+            % NANO_IN_UNIT;
         tend.tv_sec +=
-            (tend.tv_nsec + ms_limit * 1000 * 1000)
-            / NANO_IN_X;
+            (tend.tv_nsec + ms_limit * NANO_IN_MILLI)
+            / NANO_IN_UNIT;
     }
 
     snprintf(dirstack, sizeof dirstack, "%s", dirname);
@@ -333,7 +333,6 @@ int delete_dir(char const* dirname, int ms_limit)
                      dirstack,
                      entry->d_name);
             rslt = stat(f, &statbuf);
-            printf("stat(%s) = %d\n", f, rslt);
             if (0 == rslt) {
                 if (S_ISDIR(statbuf.st_mode)) {
                     strcpy(dirstack, f);
@@ -370,6 +369,13 @@ static bool are_we_there_yet(struct timespec* there)
            || ((t.tv_sec == there->tv_sec)
                && (t.tv_nsec > there->tv_nsec));
 }
+```
+
+and some constants:
+```c
+#define NANO_IN_MILLI (1000*1000)
+#define MILLI_IN_UNIT 1000
+#define NANO_IN_UNIT (NANO_IN_MILLI * MILLI_IN_UNIT)
 ```
 
 Here we're using `clock_gettime(CLOCK_MONOTONIC,...)` to keep track of
