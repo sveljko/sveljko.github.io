@@ -81,7 +81,7 @@ int delete_dir(char const* dirname)
         return -1;
     }
     do {
-        char           fname[MAX_PATH + 1];
+        char           f[MAX_PATH + 1];
         struct stat    statbuf;
         struct dirent* entry = readdir(dir);
         if (NULL == entry) {
@@ -92,14 +92,14 @@ int delete_dir(char const* dirname)
             continue;
         }
         snprintf(
-            fname, sizeof fname, "%s/%s", dirname, entry->d_name);
-        rslt = stat(fname, &statbuf);
+            f, sizeof f, "%s/%s", dirname, entry->d_name);
+        rslt = stat(f, &statbuf);
         if (0 == rslt) {
             if (S_ISDIR(statbuf.st_mode)) {
-                rslt = delete_dir(fname);
+                rslt = delete_dir(f);
             }
             else {
-                rslt = remove(fname);
+                rslt = remove(f);
             }
         }
     } while (0 == rslt);
@@ -205,25 +205,30 @@ int delete_dir(char const* dirname)
             break;
         }
         do {
-            char           fname[MAX_PATH + 1];
+            char           f[MAX_PATH + 1];
             struct stat    statbuf;
             struct dirent* entry = readdir(dir);
             if (NULL == entry) {
                 break;
             }
-            if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
+            if (!strcmp(entry->d_name, ".")
+                || !strcmp(entry->d_name, "..")) {
                 continue;
             }
-            snprintf(fname, sizeof fname, "%s/%s", dirstack, entry->d_name);
-            rslt = stat(fname, &statbuf);
+            snprintf(f,
+                     sizeof f,
+                     "%s/%s",
+                     dirstack,
+                     entry->d_name);
+            rslt = stat(f, &statbuf);
             if (0 == rslt) {
                 if (S_ISDIR(statbuf.st_mode)) {
-                    strcpy(dirstack, fname);
+                    strcpy(dirstack, f);
                     pushed = true;
                     break;
                 }
                 else {
-                    rslt = remove(fname);
+                    rslt = remove(f);
                 }
             }
         } while (0 == rslt);
@@ -287,10 +292,14 @@ int delete_dir(char const* dirname, int ms_limit)
 {
     char            dirstack[MAX_PATH + 1];
     struct timespec tend;
-    int             rslt = clock_gettime(CLOCK_MONOTONIC, &tend);
+    int rslt = clock_gettime(CLOCK_MONOTONIC, &tend);
     if (0 == rslt) {
-        tend.tv_nsec = (tend.tv_nsec + ms_limit * 1000 * 1000) % NANO_IN_X;
-        tend.tv_sec += (tend.tv_nsec + ms_limit * 1000 * 1000) / NANO_IN_X;
+        tend.tv_nsec =
+            (tend.tv_nsec + ms_limit * 1000 * 1000)
+            % NANO_IN_X;
+        tend.tv_sec +=
+            (tend.tv_nsec + ms_limit * 1000 * 1000)
+            / NANO_IN_X;
     }
 
     snprintf(dirstack, sizeof dirstack, "%s", dirname);
@@ -302,7 +311,7 @@ int delete_dir(char const* dirname, int ms_limit)
             break;
         }
         do {
-            char           fname[MAX_PATH + 1];
+            char           f[MAX_PATH + 1];
             struct stat    statbuf;
             struct dirent* entry;
 
@@ -314,20 +323,25 @@ int delete_dir(char const* dirname, int ms_limit)
             if (NULL == entry) {
                 break;
             }
-            if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
+            if (!strcmp(entry->d_name, ".")
+                || !strcmp(entry->d_name, "..")) {
                 continue;
             }
-            snprintf(fname, sizeof fname, "%s/%s", dirstack, entry->d_name);
-            rslt = stat(fname, &statbuf);
-            printf("stat(%s) = %d\n", fname, rslt);
+            snprintf(f,
+                     sizeof f,
+                     "%s/%s",
+                     dirstack,
+                     entry->d_name);
+            rslt = stat(f, &statbuf);
+            printf("stat(%s) = %d\n", f, rslt);
             if (0 == rslt) {
                 if (S_ISDIR(statbuf.st_mode)) {
-                    strcpy(dirstack, fname);
+                    strcpy(dirstack, f);
                     pushed = true;
                     break;
                 }
                 else {
-                    rslt = remove(fname);
+                    rslt = remove(f);
                 }
             }
         } while (0 == rslt);
@@ -348,12 +362,13 @@ Yes, we acquired a new helper function:
 static bool are_we_there_yet(struct timespec* there)
 {
     struct timespec t;
-    int             rslt = clock_gettime(CLOCK_MONOTONIC, &t);
+    int rslt = clock_gettime(CLOCK_MONOTONIC, &t);
     if (rslt != 0) {
         return true;
     }
     return (t.tv_sec > there->tv_sec)
-           || ((t.tv_sec == there->tv_sec) && (t.tv_nsec > there->tv_nsec));
+           || ((t.tv_sec == there->tv_sec)
+               && (t.tv_nsec > there->tv_nsec));
 }
 ```
 
