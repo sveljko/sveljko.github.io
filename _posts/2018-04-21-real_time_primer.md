@@ -114,10 +114,10 @@ int delete_dir(char const* dirname)
 Obviously, we don't do much in the way of error handling and such,
 but, this is illustration code, not production-ready code.
 
-You may notice that we used stack allocation for `fname` instead of
-dynamic allocation (`malloc()`), which is one of the first things
-people associate with "real time software".  It's interesting enough
-to deserve a side-bar.
+You may notice that we used stack allocation for `f` (file name)
+instead of dynamic allocation (`malloc()`), which is one of the first
+things people associate with "real time software".  It's interesting
+enough to deserve a side-bar.
 
 ### Dynamic memory allocation in RTSW
 
@@ -143,6 +143,14 @@ use _boundless_ recursion. That is, if you know / can prove that your
 recursion will be at most N levels deep and that you do have enough
 memory for the stack in that case, you're OK.
 
+For example, say you're developing SW for a cross-bar switch. Finding
+a path to connect two points can be recursive, in general, because the
+upper bound for the level of recursion is the number of rods/bars that
+you can (cross-)connect. Because it doesn't make sense to connect
+twice to the same bar for the same connection. So, if the number of
+bars is small enough to fit in your available stack memory, you're
+good.
+
 But, obviously, a directory tree can be _very_ deep and overflow the
 stack memory.
 
@@ -152,11 +160,12 @@ In general, this involves handling the stack ourselves. In this case,
 the stack is that of (sub-)directories to delete.
 
 By default, one would make either a list or an array to represent said
-stack. If using a list, it would take elements from a pool. In both
-cases, one would need to know the maximum level of the stack (in our
-case, depth of the directory tree). In some situations, you might know
-that. But, for directories, you mostly don't. The whole point is for
-one to be able to nest them directories.
+stack. If using a list, it would take elements from a pool (an array,
+usually). In both cases, one would need to know the maximum level of
+the stack (in our case, depth of the directory tree). In some
+situations, you might know that (like the cross-bar example). But, for
+directories, you mostly don't. The whole point is for one to be able
+to nest them directories.
 
 But, we can observe that this "stack of directories" has a well known
 representation - the `dir/subdir/subdir....`. So, instead of keeping a
@@ -274,10 +283,18 @@ Just like we can't have memory-boundless code, we can't have
 time-boundless code. But, since directory tree can be deep, it is, for
 all intents and purposes, boundless.
 
+In the elevator, the much plays while the car is moving. So, our SW
+has to control direction and speed of the car and brakes to stop the
+car, all in the same time as playing. One CPU (core) can't do all of
+that really at the same time, but we can do most of the stuff "fully"
+when we need to do them. But, deleting a directory tree can be very
+time consuming for big trees, so we can't just stop doing everyting
+else.
+
 So, we have to do what we often do in RTSW: "break up long
 calculations".  We have to allocate some time to do the work, stop
-once it's exhausted, then come back and do some more, repeating that
-until we're done.
+once it's exhausted, then come back later and do some more, repeating
+that until we're done.
 
 This usually involves maintaining some state, usually via some Finite
 State Machine. But, in this case, we're lucky, sort of.  The
