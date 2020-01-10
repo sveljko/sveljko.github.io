@@ -84,16 +84,16 @@ request that user reports start using "initali_z_e" instead of
 "initili_s_e". There will be changes "all over the place" and
 "marking" them all with ticket ID would be futile.
 
-But, even some less contrived example suffers from the same problem.
-You might need to change code in several places and putting ticket IDs
-in all of them is a chore. OTOH, if you don't put it in all places,
-you need to think about "where and why to put them".
+Even some less contrived example suffers from the same problem.  You
+might need to change code in several places and putting ticket IDs in
+all of them is a chore. OTOH, if you don't put it in all places, you
+need to think about "where and why to put them".
 
 ### It's next to impossible to maintain it
 
 This is best explained with an example.
 
-Suppost our well-intended programmer wrote something like this:
+Suppose our well-intended programmer wrote something like this:
 
 ```ruby
 # MSP-5443: Crash on adding new data to existing item
@@ -159,7 +159,7 @@ references (pointers)".
 
 This is different from, say, referring to a standard by its code,
 like: `IETF RFC 3543` or `ITU-T Q.703:1992` (for some standards, you
-need to refer to year or version). You such things to "explain why
+need to refer to year or version). You use such things to "explain why
 you're doing something", or "why some constant(s) have some value(s)".
 
 Also, providing a reference to a book or an article/paper, for example
