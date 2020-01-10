@@ -16,4 +16,4 @@ developing real-time software or other "low level" stuff.
 
 ### Contact me
 
-srdjan UNDERSCORE veljkovic AT yahoo DOT com
+sr DOT veljkovic AT gmail DOT com
