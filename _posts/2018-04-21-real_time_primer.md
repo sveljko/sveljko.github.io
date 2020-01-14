@@ -5,7 +5,10 @@ lang: en
 ---
 
 It's hard to explain what is "real time programming" and how to do it.
-Let's try to do that with an example.
+Instead, we'll show some "everyday" code that is not "real time" and
+how to go about making it "real time".  As we'll see, no, it's not
+enough just to avoid dynamic memory allocation - it's not even
+_required_.
 
 ## Real-time: what is it?
 
