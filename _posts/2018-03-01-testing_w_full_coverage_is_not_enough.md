@@ -4,20 +4,33 @@ title: Testing w/full coverage is not enough
 lang: en
 ---
 
-Coverage is a useful metric of testing, but, it's not the goal.  Code
-can have 100% coverage and still have bugs and have 0% coverage and
-have no bugs. 
+Coverage is a useful metric of testing, but, high coverage is _not_
+the goal.  Code can have 100% coverage and still have bugs.  For
+example, if some code is _missing_ and thus software doesn't do what
+it's supposed to do.
 
 ## 100% covered code with a bug
 
 In a module that had 100% coverage, both line and branch ones, there
 was a pretty serious bug.
 
-The module deals with timer lists, implemented as doubly linked lists.
-Each element carries info on "how much ticks should pass after the
-previous node expires until we are to expire". This makes handling
-timer lists pretty efficient. "Tick" is a unit of time measure as used
-in the application (ms is common).
+The module deals with timer lists, implemented as (doubly) linked
+lists.  Each element carries info on "how much ticks should pass after
+the previous node expires until we are to expire".  For example, a
+list might look like this at some point (showing only forward
+pointers):
+
+    T1(100) -> T2(20) -> T3(38) -> T4(2)
+
+which represnts that we have 4 active timers which will expire:
+
+* T1 in 100 ticks
+* T2 in 120 ticks
+* T3 in 158 ticks
+* T4 in 160 ticks
+
+This makes handling timer lists pretty efficient. "Tick" is a unit of
+time measure as used in the application (ms is common).
 
 The bug was simple - if we're cancelling a timer, thus removing it
 from the list, and it is the very _first_ timer in the list (the

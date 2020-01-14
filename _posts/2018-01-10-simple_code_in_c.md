@@ -6,9 +6,9 @@ lang: en
 
 Just because you're writing in C, doesn't mean you have to write
 bad/complex/long code. C is not the enemy, you can write bad code in
-_any_ language, and you _can_ write good/simple/short code in C.  Even
-for string handling.
-
+_any_ language, and you _can_ write good/simple/short code in C.
+We'll show how some 20 lines of C string handling code can be reduced
+two one or two lines.
 
 ## Everybody says C is bad for string handling
 

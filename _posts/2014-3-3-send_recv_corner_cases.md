@@ -4,15 +4,10 @@ title: send(), recv() and the corner cases
 lang: en
 ---
 
-Designing, implementing and documenting corner cases is always
-"fun". Obviously, I'm kidding.  It's quite the opposite. It's boring.
-
-We tend to assume how these will work, that it's OK and we don't need
-to worry about it too much.  That is, we think that the general
-description fits the corner case. Even if it doesn't, it's "close
-enough" and, it's a corner case, it doesn't happen too often and, as
-long as it doesn't crash, it's OK, whatever it is.
-
+Designing, implementing and documenting corner cases is hard because
+it's boring.  So, we tend to think that the general description fits
+the corner case.  Even if it doesn't, it's "close enough" and it
+doesn't happen too often and, as long as it doesn't crash, it's OK.
 But, this is software, it has no soul and plays no favorites to any
 values and/or (corner) cases.  Corner case should be "just another
 case".
