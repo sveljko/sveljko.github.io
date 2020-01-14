@@ -4,30 +4,21 @@ title: No to ticket numbers in comments
 lang: en
 ---
 
-It seems like a good idea to put a ticket (issue) number in a comment.
-It's not. Let's see why.
 
-## WDYM?
+Often, a task you're working on has some identificator from some
+"ticketing" system, like currently popular JIRA.  Usually it's a short
+mnemonic followed by a number, something like: `MSP-5443`.  It's nice
+to put this ID in stuff.  For example, if you put it in your VCS
+comments (on commit/check-in), JIRA can link VCS commit to the ticket.
+But, in source code, it can be distracting, become outdated and,
+basically, is a maintenance nightmare.
 
-So, you're working on a task. Often, it is described in some tracking
-system (at the time of this writing, a popular one is JIRA).
-
-Eack task (issue, "ticket") has some identificator. Usually it's a
-short mnemonic followed by a number. So, something like: `MSP-5443`.
-
-For various purposes, it's nice to put this ID in stuff. For example,
-in your VCS comments (on commit/check-in). That enables some
-automation, so, for example, the ticketing system can link you to the
-change that was done to implement the task/ticket.
-
-But, putting it in source code is not a good idea.
-
-## Why would you do such a thing?
+## Why would you even do such a thing?
 
 Well, the idea looks good. If you write down the ticket ID, it saves
-you the trouble of describing at length a problem or the features you
-implement. Anyone can just see the ticket and go to the ticketing
-system for explanation. Hell, some advanced development environment
+you the trouble of describing at length tge problem or the features
+you implement.  Anyone can just see the ticket and go to the ticketing
+system for explanation.  Hell, some advanced development environment
 might actually enable you to "click" on the ticket ID in your comment
 and jump to it in the ticket system (Web)UI.
 
