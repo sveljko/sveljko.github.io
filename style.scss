@@ -255,11 +255,12 @@ div .posts {
   float: left;
   width: 50%;
   padding-right: 2em;
+
+  @include mobile {
+    width: 100%;
+  }
 }
 
-//.posts > .entry {
-//  width: 100%;
-//}
 
 .post {
   blockquote {
