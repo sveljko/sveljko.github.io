@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Writing simple code in C
+title: 🥧 Writing simple code in C
 lang: en
 ---
 
