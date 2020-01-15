@@ -1,6 +1,6 @@
 ---
 layout: post
-title: send(), recv() and the corner cases
+title: 🏴 send(), recv() and the corner cases
 lang: en
 ---
 
