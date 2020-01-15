@@ -1,6 +1,6 @@
 ---
 layout: post
-title: No to ticket numbers in comments
+title: 🗃 No to ticket numbers in comments
 lang: en
 ---
 
