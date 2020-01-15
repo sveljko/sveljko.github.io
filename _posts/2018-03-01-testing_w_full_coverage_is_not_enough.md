@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Testing w/full coverage is not enough
+title: 🧪 Testing w/full coverage is not enough
 lang: en
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Real-time programming primer
+title: ⏰ Real-time programming primer
 lang: en
 ---
 
