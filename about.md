@@ -17,6 +17,6 @@ developing real-time software or other "low level" stuff.
 времену или другим програмима "ниског нивоа".
 
 
-### Contact
+### 📧
 
 sr DOT veljkovic AT gmail DOT com
