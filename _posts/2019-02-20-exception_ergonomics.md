@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 🔖 Exception ergonomics
+title: 🚮 Exception ergonomics
 lang: en
 ---
 
@@ -117,7 +117,7 @@ are not very good.
 
 The most often heard one is the worst: 
 
-> Use exceptions for exceptional situations
+> _Use exceptions for exceptional situations_
 
 This is way too generic and ambiguous.  What one may consider
 exceptional, another one may not.  Even worse, even if we agree on the
@@ -137,7 +137,7 @@ interface.
 
 A slightly better one is
 
-> Throw exceptions if your procedure cannot achieve it's post-conditions
+> _Throw exceptions if your procedure cannot achieve it's post-conditions_
 
 While well-intended, it's not very applicable in practice.
 
@@ -208,11 +208,13 @@ show-stopper (if the file has essential configuration data that has no
 defaults), but in another context, it might be harmlessly ignored (if
 a file contains some cache).
 
-So, throw when you are certain that the code, under _any possible
-context_, cannot move forward.  Obviously, opening a file should never
-throw, unless you make some "intorelable file open" and use that
-procedure, instead of the regular "file open" procedure in your
-application.
+So:
+
+> throw when you are certain that the code, under _any possible context_, cannot move forward
+
+Obviously, opening a file should never throw, unless you make some
+"intorelable file open" and use that procedure, instead of the regular
+"file open" procedure in your application.
 
 As we can see, this means that when you throw is essentially
 application-specific.
@@ -241,8 +243,9 @@ avoids any "error indicating values".
 
 ## What to throw
 
-Throw exceptions (codes, classes/objects) that are _application_
-specific.  Do _not_ throw generic or code/library specific exceptions.
+> Throw exceptions (codes, classes/objects) that are _application_
+> specific.  Do _not_ throw generic or code/library specific
+> exceptions.
 
 This facilitates good exception handling.
 
@@ -284,10 +287,10 @@ update your code.  Essentially, such "code specific exceptions" can only
 be handled "at the place of the call", like:
 
 ```python
-try:
-    return a[y]
-except KeyError:
-    return None
+    try:
+        return a[y]
+    except KeyError:
+        return None
 ```
 
 If the exception propagates ("escapes the calling function") it becomes,
@@ -306,10 +309,10 @@ the missing key somehow, you still can:
 
 ```python
     x = a.get(y)
-	if x is None:
-	    # handle it
-	else:
-	    # use it
+    if x is None:
+        # handle it
+    else:
+        # use it
 ```
 
 This is rather similar to a `try/catch` block, the differences are
@@ -376,8 +379,8 @@ library are handled.
 
 ## When/where to catch
 
-Catch when you have enough information to handle the error _and_ where
-it makes the least amount of effort to do so.
+> Catch when you have enough information to handle the error _and_
+> where it makes the least amount of effort to do so.
 
 The thing is, there might be many places where you could catch an
 exception, but, only one (or few) require the least amount of effort.
@@ -387,12 +390,12 @@ mean "just write empty catch blocks", as is often done, especially in
 Java, where one is forced to catch some "checked" exceptions.  A lot
 of time you'll see terrible code like this:
 
-```Java
-    try {
-        FileReader file = new FileReader("C:\\test\\a.txt");
-    }
-	catch (IOException ex) {
-	}
+```java
+try {
+    FileReader file = new FileReader("C:\\test\\a.txt");
+}
+catch (IOException ex) {
+}
 ```
 	
 Sometimes the author may try to hide this with some logging, but,
@@ -431,16 +434,16 @@ would not handle (or even care) about exceptions, which would be
 caught in a central place.  Something like:
 
 ```c++
-    try {
-	    switch (command) {
-		case cmdGetTime:  cmdGetTime_exec(); break;
-		case cmdTimeSet:  cmdTimeSet_exec(); break;
-		...
-		}
-	}
-	catch (RPCException &ex) {
-	    PostMsg("Communication with device failed: %s", ex.what());
-	}
+try {
+    switch (command) {
+    case cmdGetTime:  cmdGetTime_exec(); break;
+    case cmdTimeSet:  cmdTimeSet_exec(); break;
+    ...
+    }
+}
+catch (RPCException &ex) {
+    PostMsg("Communication with device failed: %s", ex.what());
+}
 ```
 
 The problem arose with some commands that actually executed a lot of
@@ -459,17 +462,17 @@ which meant that the "read config" function would need to handle the
 exceptions itself.  Still, not too bad:
 
 ```c++
-    retries = 0;
-    for (e = config_element.begin(); e != config_element.end(); ++e) {
-	    try {
-		    apply_config_element(*e);
-		}
-		catch (RPCException& ex) {
-		    if (++retries == 3) {
-			    break;
-			}
-		}
-	}
+retries = 0;
+for (e = cfg_element.begin(); e != cfg_element.end(); ++e) {
+    try {
+        apply_config_element(*e);
+    }
+    catch (RPCException& ex) {
+        if (++retries == 3) {
+            break;
+        }
+    }
+}
 ```
 
 Of course, the try/catch we showed above now doesn't make sense for
@@ -537,12 +540,12 @@ essentially coding the above several steps:
 
 ```c++
     current_config = read_device_config();
-	if (apply_config(user_config) != 0) {
-	    PostMsg("Failed to set the user configuration");
-	    if (apply_config(current_config) != 0) {
-		    PostMsg("Failed to roll back");
-		}
-	}
+    if (apply_config(user_config) != 0) {
+        PostMsg("Failed to set the user configuration");
+        if (apply_config(current_config) != 0) {
+            PostMsg("Failed to roll back");
+        }
+    }
 ```
 
 Obviously, the `read_device_config()` and `apply_config` would handle
@@ -552,15 +555,15 @@ the retries.  They can be trivial:
     for (retries = 0; retries < 5; ++retries) {
         try {
             read_device_config_raw(config)
-			break;
+            break;
         }
         catch (RCPException &ex) {
-			continue; // looks like ignoring exceptions!
+            continue; // looks like ignoring exceptions!
         }
     }
-	if (5 == retries) {
-	    return -1;
-	}
+    if (5 == retries) {
+        return -1;
+    }
 ```
 
 Where `read_device_config_raw()` can just go its merry way and blissfully
