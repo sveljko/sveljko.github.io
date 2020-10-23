@@ -192,8 +192,8 @@ basically, just add and remove the last dir from the string, maintaining
 a stack "inside" the string.
 
 A nice point here is that, on most systems, there is some reasonable
-limit on how much chars is there in a file-path, at most. Sure, we all
-have cursed some SW that can't handle paths longer than 260
+limit on how much chars can there be in a file-path, at most. Sure, we
+all have cursed some SW that can't handle paths longer than 260
 characters, thus can't copy some backups that accumulate such long
 paths. But, in general, it's not reasonable to expect a user to type
 such long paths or use them in any meaningful way. So, there is some
@@ -288,11 +288,11 @@ all intents and purposes, boundless.
 
 In the elevator, the much plays while the car is moving. So, our SW
 has to control direction and speed of the car and brakes to stop the
-car, all in the same time as playing. One CPU (core) can't do all of
-that really at the same time, but we can do most of the stuff "fully"
-when we need to do them. But, deleting a directory tree can be very
-time consuming for big trees, so we can't just stop doing everyting
-else.
+car, all in the same time as playing music.  qOne CPU (core) can't do
+all of that really at the same time, but we can do most of the stuff
+"fully" when we need to do them. But, deleting a directory tree can be
+very time consuming for big trees, so we can't just stop doing
+everyting else.
 
 So, we have to do what we often do in RTSW: "break up long
 calculations".  We have to allocate some time to do the work, stop
@@ -403,7 +403,7 @@ time, but, that's just to "keep us within POSIX", any similar API
 would do.
 
 Obviously, this is even more complex now, and harder to use - we need
-to figure out the amount of milliseconds to pass to this funciton and
+to figure out the amount of milliseconds to pass to this function and
 we have to handle `+1` as an indicator "call me later".
 
 ### But, what about threads/tasks?

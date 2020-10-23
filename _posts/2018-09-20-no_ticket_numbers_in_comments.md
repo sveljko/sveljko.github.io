@@ -35,8 +35,8 @@ When writing code, the best favor you can do for the future reader
 (non-distracting) as possible.
 
 The ticket number is distracting, because it has no meaning in itself,
-thus it prompts the user to seek its meaning. This is a distraction,
-even in the "high level IDE" which makes the distraction "as quick as
+thus it prompts the reader to seek its meaning. This is a distraction,
+even in the "high level IDE" which makes the distraction "as short as
 possible".
 
 Even worse, tickets usually have various data, like "project", "epic",
@@ -111,9 +111,9 @@ end
 ```
 	
 Obviously, at this point, the comment is out-of-date. Sure, it's still
-_somewhat_ relevant, but, the reader might conclude that _this_ is the
-code done for MSP-5443. It is not. This is the code done for MSP-5443
-and MSP-6554. So, to maintain this, we would:
+_somewhat_ relevant, but, the reader might conclude that this whole
+"block" was written because of MSP-5443. But, it is because of both
+MSP-5443 and MSP-6554. So, to maintain this, we would:
 
 ```ruby
 # MSP-5443: Crash on adding new data to existing item
@@ -124,9 +124,9 @@ if dragging and not add_by_keyboard then
 end
 ```
 
-But, what if another ticket comes in and we need to update this code?
-I think you can guess where this is going... and it's not a good place
-to go to.
+But, what if yet another ticket comes in and we need to update this
+code?  I think you can guess where this is going... and it's not a
+good place to go to.
 
 
 ## From a code POV
@@ -137,8 +137,8 @@ or have any sense of control about.
 It may be deleted without you noticing and you'll have a "use after
 free" of sorts.
 
-Or you may forget to update it, and it points to something completely
-wrong.
+Or you may forget to update it, and it would then point to something
+completely wrong.
 
 ## It's not just ticketing systems
 
@@ -148,10 +148,11 @@ references (pointers)".
 
 ## Let's not get carried away, here
 
-This is different from, say, referring to a standard by its code,
-like: `IETF RFC 3543` or `ITU-T Q.703:1992` (for some standards, you
-need to refer to year or version). You use such things to "explain why
-you're doing something", or "why some constant(s) have some value(s)".
+This is different from, say, referring to an international standard by
+its code, like: `IETF RFC 3543` or `ITU-T Q.703:1992` (for some
+standards, you need to refer to year or version). You use such things
+to "explain why you're doing something", or "why some constant(s) have
+some value(s)".
 
 Also, providing a reference to a book or an article/paper, for example
 to "point" to the definition of an algorithm used, is fine.

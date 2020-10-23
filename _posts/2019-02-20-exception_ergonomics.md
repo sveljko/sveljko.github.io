@@ -74,8 +74,8 @@ That's certainly an option. But, remember that:
    impossible, but, when it's possible, it's _very_ nice.
 
 So, if it is possible in your code to not use exceptions _and_ your
-code will be better of not using them, by all means, don't use them and
-forget all about their ergonomics.
+code will be better off not using them, by all means, don't use them
+and forget all about their ergonomics.
 
 ## Illustrating example
 
@@ -156,7 +156,7 @@ Even disregarding the "lazy programmer", this is tricky.
 Post-conditions can change during the evolution of the code and
 maintenance of a procedure.  Having to update our "throw if
 postconditions fail" code can be a maintenance burden.  The thing is,
-most of the time, to achive this, we would need to add some
+most of the time, to achieve this, we would need to add some
 "postcodition checking" code towards the end of our procedure.  This
 can also be a performance issue, if the procedure is on a "hot path".
 Then, one might be tempted to remove it in some "optimized build",
@@ -165,13 +165,13 @@ differently, exception-wise (which was one reason to avoid
 "preconditions as exceptions").
 
 At long last, what is a postcondition is often rather arbitrary.
-Remembering our "open file", is "file successfully opene" a
-post-condition?  If not, what is?  One might say "the file object
-(structure, record, pointer...) returned is valid", but that is
+Remembering our "open file", is "file successfully opened" a
+post-condition?  If not, what is?  One might come up with "the file
+object (structure, record, pointer...) returned is valid", but that is
 ambiguous (is `nullptr` a valid pointer or `nil` or `None` a valid
 object) and, at long last, any procedure worth a damn should _never_
 return invalid objects.  Btw, it is one of the reasons why the
-postconditions often change during evolution and maintenace.
+postconditions often change during evolution and maintenance.
 
 ### "Do as the standard library of you language does"
 
@@ -356,7 +356,7 @@ actually make all exceptions checked.
 But, the question here is: if your languages supports checked exceptions,
 when should you actually use them?
 
-Of course, we don't want to go down to road of bad guidelines like
+Of course, we don't want to go down the road of bad guidelines like
 "use them one some exception really needs to be handled".
 
 Important thing to consider is that checked exceptions have the nasty
@@ -369,7 +369,7 @@ they are actually a minority.
 
 So, given what we discussed above, it should be easy to conclude what
 to do here: raise a checked exception when your _application_ cannot,
-_under any circumstances_, allow unhandling said exception.  For
+_under any circumstances_, allow _not_ handling said exception.  For
 example, real time applications cannot allow unhnadled exceptions.
 
 Now, if you have a library that is meant to be used in different
@@ -428,7 +428,7 @@ up getting a valid response.
 
 This exception was then caught in the GUI event loop, in a helper
 procedure that handled all GUI "commands" (started via menu, keyboard
-shortcut, icon...).  The idea is that most commands would do some RPC
+shortcut, icon...).  The idea was that most commands would do some RPC
 (most of them only one or two) and that the procedure for each command
 would not handle (or even care) about exceptions, which would be
 caught in a central place.  Something like:
@@ -451,15 +451,15 @@ RPCs.  The device had a rather complex configuration and the
 requirement was that one can set the whole configuration with a single
 command (reading it from a file on the PC).  Of course, this went
 hand-in-hand with another command that would read the current
-configuraiton from the device (and save it in a file on the PC).
+configuration from the device (and save it in a file on the PC).
 
 This meant potentially hundreds of RPCs executed in one command.
 Reading is not so bad - if any fails, one could say that reading of
-configuration failed and report that to the user.  Of course, that was
-deemed a too bad UX, as this could take a while (minutes), since the
-communication link was slow.  So, some auto-retry logic was added,
-which meant that the "read config" function would need to handle the
-exceptions itself.  Still, not too bad:
+whole configuration failed and report that to the user.  Of course,
+that was deemed a too bad UX, as this could take a while (minutes),
+since the communication link was slow.  So, some auto-retry logic was
+added, which meant that the "read config" function would need to
+handle the exceptions itself.  Still, not too bad:
 
 ```c++
 retries = 0;
@@ -475,10 +475,11 @@ for (e = cfg_element.begin(); e != cfg_element.end(); ++e) {
 }
 ```
 
-Of course, the try/catch we showed above now doesn't make sense for
-this particular command (this catch block made the one "above it"
-useless), but, there were some commands that did not do any RPCs, so,
-that was OK - it was already useless for some commands.
+Of course, the try/catch we showed above (that "surrounded" the
+"switch by command ID") now doesn't make sense for this particular
+command (this catch block made the one "above it" useless), but, there
+were some commands that did not do any RPCs, so, that was OK - it was
+already useless for some commands.
 
 The big problem was setting the configuration.  While adding a retry
 was the first step, the problem was that even after a few retries, it
@@ -503,8 +504,8 @@ For all the simple commands, which executed one or two RPCs, the
 context) to display an appropriate message to the user, informing her
 that her command failed so she can decide what to do next.  It was
 also the least amount of effort, as it was done in a few lines of
-code, rather in one of a about hundred commands, amounting to hundreds
-of lines of code.
+code, rather than few in each of hundreds commands, amounting to more
+than thousand lines of code.
 
 But, for the whole-configuration commands, this was obviously not
 good.
@@ -531,7 +532,8 @@ Thinking further, there could be other reasons that applying a
 configuration can fail.  For example, there might be something wrong
 with our configuration data (file got corrupt).  So, this is not only
 about exceptions.  This will likely be reported as an error in, say,
-the result of an RPC (our `SetTime()` might return `-1`).
+the result of an RPC (our `SetTime()` might return `-1` if given
+invalid time).
 
 Thus, it doesn't make sense to tie the failing of applying a
 configuration to exceptions and our command procedure should
@@ -582,8 +584,7 @@ opposite.
 It's also interesting that an (essentially) empty catch block actually
 means handling the exception in this code structure.  We could write
 this differently if that bothers us, but, this idiom is fairly well
-known in C/C++ - actually it's one way to kind-of simulate exceptions
-when there are none (in C, or C++ in "no exceptions" mode).
+known in C/C++.
 
 
 ## Moral of the story
