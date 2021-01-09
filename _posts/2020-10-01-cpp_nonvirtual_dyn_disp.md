@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 🚮 C++ non-virtual dynamic dispatch
+title: 👨‍🔧 C++ non-virtual dynamic dispatch
 lang: en
 ---
 
@@ -64,6 +64,10 @@ Animal_vtable Cat_vtable = { Cat_sound };
 void Cat_construct(Cat* p) { p->vtable = Cat_vtable; }
 ```
 
+There are other possible ways of implementing C++ virtual function
+based dynamic dispatch, but v-tables are the only one used in
+practice.
+
 
 ### Why avoid virtual functions?
 
@@ -71,14 +75,14 @@ The fundamental problem lies with v-tables. They occupy some
 memory in _each_ object, which can be a lot, especially in
 embedded or otherwise constrained systems.
 
-In context of multiple inheritance, v-tables pose even greater
-issues, and that's why you usually hear that you should avoid
-multiple inheritance in C++ and why C++ inspired OO languages,
-like Java and C# dismiss multiple inheritance altogether.
+In context of multiple inheritance, v-tables pose even greater issues,
+and that's why you usually hear that you should avoid multiple
+inheritance in C++ and why C++ inspired OO languages, like Java and
+C#, dismiss multiple inheritance altogether.
 
 There are also some language-level issues, like knowing when a
 functions was overrided or not (especially in C++98, when there was no
-`override` keyword), made more comples because of function
+`override` keyword), made more complex because of function
 overloading.
 
 Finally, v-tables are slow. Here's what goes on:
@@ -255,7 +259,7 @@ having one or more these "CRTP induced" non-virtual dynamically
 dispatched functions.
 
 Once the groundwork is done, this is not much more work than adding a
-new virtual function and is scarecely anu more work than adding a new
+new virtual function and is scarecely any more work than adding a new
 class.
 
 ### Issues
@@ -319,7 +323,7 @@ also replace `@@MAX_LOG_EVENT`:
 static fn_print a_print[@@MAX_LOG_EVENT];
 ```
 
-Also, in some future version of the C++ standard, there might be some
+Also, in a future version of the C++ standard, there might be some
 provisions for making something like a compile-time counter,
 especially with compile-time reflection and code generation
 (insertion).
