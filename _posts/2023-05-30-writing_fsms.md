@@ -322,7 +322,7 @@ source of bugs.
 For C99 or similarly in some other language, this can be 
 more readable and easier to maintain:
 
-```
+```c
 transition_t transit[STATECOUNT][EVENTCOUNT] = {
     [red] = {red_timeout, ignore, red_emptied},
     [red_yellow] = {red_yellow_timeout, ignore, red_yellow_emptied},
@@ -389,7 +389,7 @@ enter_red:
         }
 ```
    
-    This trick can't then be used for exit, too.
+   This trick can't then be used for exit, too.
 2. Helper function can be utilized. Either one
    per entry/exit or grouped.
 
