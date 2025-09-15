@@ -16,9 +16,11 @@ unconstrained inheritance from more than one base class.
 class Animal {
 public: virtual std::string name() const;
 };
+
 class Bipedal {
 public: virtual bool can_jump() const;
 };
+
 class Ape : public Animal, public Bipedal {
 public:
     std::string() name() { return "Ape"; }
@@ -49,10 +51,10 @@ spelled before C++11).
 We're gonna provide an example right away:
 
 ```c++
-int do_stuf_with(Bipedal* p) { ... }
+int process(Bipedal* p) { ... }
 
 int interesting(Ape* ape) {
-    return do_stuff_with(p);
+    return process(p);
 }
 ```
 
@@ -83,8 +85,8 @@ pass the pointer as received. We have to adjust it, like:
 
 ```c++
 int interesting(Ape* ape) { // still sketch
-    return do_stuff_with(&ape->base_Bipedal);
-                     // (ape + offsetof(Ape, Bipedal)) 
+    return process(&ape->base_Bipedal);
+               // (ape + offsetof(Ape, Bipedal)) 
 }
 ```
 
@@ -107,7 +109,7 @@ is much more involved:
 
 ```c++
 int interesting(Ape* ape) { // sketch even still
-    return do_stuff_with((nullptr == ape) ? null : &ape->base_Bipedal);
+    return process((nullptr == ape) ? null : &ape->base_Bipedal);
 }
 ```
 
